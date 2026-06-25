@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CostToShip — AI Coding Tools Benchmark</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #ffffff; color: #1a1a1a; line-height: 1.6; }
+
+/* Nav */
+nav { display: flex; align-items: center; padding: 16px 48px; border-bottom: 1px solid #e5e5e5; position: sticky; top: 0; background: #fff; z-index: 100; }
+nav .logo { font-weight: 700; font-size: 15px; background: #1a1a1a; color: #fff; padding: 6px 14px; border-radius: 20px; margin-right: 32px; }
+nav .nav-links { display: flex; gap: 24px; }
+nav .nav-links a { text-decoration: none; color: #555; font-size: 14px; font-weight: 500; }
+nav .nav-links a:hover { color: #1a1a1a; }
+nav .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+nav .nav-right a { text-decoration: none; color: #555; font-size: 14px; }
+
+/* Hero */
+.hero { padding: 64px 48px 48px; display: grid; grid-template-columns: 1fr 340px; gap: 48px; max-width: 1280px; margin: 0 auto; }
+.hero h1 { font-size: 52px; font-weight: 700; line-height: 1.1; letter-spacing: -1.5px; color: #1a1a1a; }
+.hero .subtitle { font-size: 18px; color: #666; margin-top: 16px; max-width: 500px; }
+.hero-sidebar { display: flex; flex-direction: column; gap: 16px; padding-top: 8px; }
+.hero-sidebar .sidebar-card { padding: 16px 0; border-bottom: 1px solid #e5e5e5; }
+.hero-sidebar .sidebar-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #c0392b; margin-bottom: 4px; }
+.hero-sidebar .sidebar-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.hero-sidebar .sidebar-card p { font-size: 13px; color: #666; }
+
+/* Highlights */
+.highlights-section { padding: 0 48px 48px; max-width: 1280px; margin: 0 auto; }
+.highlights-label { font-size: 14px; font-weight: 500; color: #888; margin-bottom: 20px; padding-top: 24px; border-top: 1px solid #e5e5e5; }
+.highlights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.highlight-card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 24px; background: #fff; transition: box-shadow 0.2s; }
+.highlight-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.highlight-card .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.highlight-card .card-title { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.highlight-card .card-title .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.highlight-card .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+.badge-new { background: #f0e6f6; color: #8e44ad; }
+.badge-updated { background: #e8f5e9; color: #2e7d32; }
+.highlight-card .card-subtitle { font-size: 13px; color: #888; margin-bottom: 20px; }
+.chart-container { position: relative; height: 220px; }
+
+/* Filters */
+.filters-section { padding: 0 48px 32px; max-width: 1280px; margin: 0 auto; }
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid #e0e0e0; background: #fff; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: #555; }
+.filter-btn:hover { border-color: #aaa; }
+.filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+/* Table */
+.table-section { padding: 0 48px 64px; max-width: 1280px; margin: 0 auto; }
+.table-section h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead th { text-align: left; padding: 12px 16px; border-bottom: 2px solid #e5e5e5; font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; user-select: none; }
+thead th:hover { color: #1a1a1a; }
+tbody td { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; }
+tbody tr:hover { background: #fafafa; }
+.tool-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+.tool-dot { width: 8px; height: 8px; border-radius: 50%; }
+.metric-highlight { font-weight: 700; color: #1a1a1a; }
+
+/* Methodology */
+.methodology-section { padding: 48px; max-width: 1280px; margin: 0 auto; border-top: 1px solid #e5e5e5; }
+.methodology-section h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+.methodology-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.method-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.method-item p { font-size: 13px; color: #666; }
+
+/* Footer */
+footer { padding: 32px 48px; border-top: 1px solid #e5e5e5; text-align: center; font-size: 13px; color: #888; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 32px 24px; }
+  .highlights-grid { grid-template-columns: 1fr; }
+  .methodology-grid { grid-template-columns: 1fr; }
+  nav { padding: 12px 24px; }
+  .highlights-section, .filters-section, .table-section, .methodology-section { padding-left: 24px; padding-right: 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">⚡ CostToShip</div>
+  <div class="nav-links">
+    <a href="#highlights">Highlights</a>
+    <a href="#results">Results</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#">GitHub</a>
+  </div>
+  <div class="nav-right">
+    <a href="#">About</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <h1>The true cost of<br>AI-generated code</h1>
+    <p class="subtitle">Measured by what works, not what runs. An independent benchmark comparing AI coding tools on cost per successful task.</p>
+  </div>
+  <div class="hero-sidebar">
+    <div class="sidebar-card">
+      <div class="label">Latest Run</div>
+      <h3>Benchmark v1.0</h3>
+      <p>4 tools × 4 categories × 5 runs each. Automated correctness scoring.</p>
+    </div>
+    <div class="sidebar-card">
+      <div class="label">Key Insight</div>
+      <h3>Cheap ≠ Cost-Effective</h3>
+      <p>The cheapest tool per-run isn't always cheapest per successful delivery.</p>
+    </div>
+  </div>
+</section>
+
+<section class="highlights-section" id="highlights">
+  <div class="highlights-label">Highlights</div>
+  <div class="highlights-grid">
+    <div class="highlight-card">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:#c0392b"></span>Cost per Success</span>
+        <span class="badge badge-new">Key Metric</span>
+      </div>
+      <p class="card-subtitle">Weighted avg cost (USD) per successful task · Lower is better</p>
+      <div class="chart-container"><canvas id="chart-cost"></canvas></div>
+    </div>
+    <div class="highlight-card">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:#8e44ad"></span>Success Rate</span>
+        <span class="badge badge-updated">Updated</span>
+      </div>
+      <p class="card-subtitle">% of runs producing correct output · Higher is better</p>
+      <div class="chart-container"><canvas id="chart-success"></canvas></div>
+    </div>
+    <div class="highlight-card">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:#d4a017"></span>Speed</span>
+      </div>
+      <p class="card-subtitle">Average seconds to completion · Lower is better</p>
+      <div class="chart-container"><canvas id="chart-speed"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<section class="filters-section">
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All Scenarios</button>
+    <button class="filter-btn" data-filter="greenfield">Greenfield</button>
+    <button class="filter-btn" data-filter="refactor">Refactor</button>
+    <button class="filter-btn" data-filter="debug">Debug</button>
+    <button class="filter-btn" data-filter="analysis">Analysis</button>
+  </div>
+</section>
+
+<section class="table-section" id="results">
+  <h2>Detailed Results</h2>
+  <table id="results-table">
+    <thead>
+      <tr>
+        <th data-sort="tool">Tool</th>
+        <th data-sort="scenario">Scenario</th>
+        <th data-sort="cost_per_run">Cost/Run ↕</th>
+        <th data-sort="success_rate">Success Rate ↕</th>
+        <th data-sort="cost_per_success">Cost/Success ↕</th>
+        <th data-sort="avg_time">Avg Time ↕</th>
+        <th data-sort="runs">Runs</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<section class="methodology-section" id="methodology">
+  <h2>Methodology</h2>
+  <div class="methodology-grid">
+    <div class="method-item">
+      <h4>Repeated Trials</h4>
+      <p>Each scenario runs 5× per tool. We report mean values with variance noted. Single runs prove nothing.</p>
+    </div>
+    <div class="method-item">
+      <h4>Automated Scoring</h4>
+      <p>Code generation tasks use test suites (binary pass/fail). Analysis tasks use rubric-based LLM grading with inter-rater checks.</p>
+    </div>
+    <div class="method-item">
+      <h4>Blind Evaluation</h4>
+      <p>Tool identity is stripped before quality assessment. Evaluators don't know which tool produced which output.</p>
+    </div>
+    <div class="method-item">
+      <h4>Same Prompt, Fresh Session</h4>
+      <p>Verbatim prompts delivered in clean sessions. No context carryover, no MCP tools, no custom instructions.</p>
+    </div>
+    <div class="method-item">
+      <h4>Version Pinned</h4>
+      <p>Tool versions, model versions, and dates recorded for every run. Fully reproducible.</p>
+    </div>
+    <div class="method-item">
+      <h4>Cost Normalized</h4>
+      <p>All costs use raw API/pay-per-use pricing. No subscription amortization. Apples to apples.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Independent benchmark by Gili · Not affiliated with any vendor · Open source · Data: mock (real results coming soon)
+</footer>
+
+<script>
+const TOOLS = {
+  'Kiro CLI': '#FF9900',
+  'Claude Code': '#D4A574',
+  'Cursor': '#00D4AA',
+  'Codex CLI': '#10A37F'
+};
+
+const DATA = [
+  { tool: 'Kiro CLI', scenario: 'Greenfield', category: 'greenfield', cost_per_run: 0.038, success_rate: 72, avg_time: 42, runs: 5 },
+  { tool: 'Kiro CLI', scenario: 'Refactor', category: 'refactor', cost_per_run: 0.052, success_rate: 68, avg_time: 55, runs: 5 },
+  { tool: 'Kiro CLI', scenario: 'Debug', category: 'debug', cost_per_run: 0.045, success_rate: 64, avg_time: 48, runs: 5 },
+  { tool: 'Kiro CLI', scenario: 'Analysis', category: 'analysis', cost_per_run: 0.061, success_rate: 80, avg_time: 38, runs: 5 },
+  { tool: 'Claude Code', scenario: 'Greenfield', category: 'greenfield', cost_per_run: 0.23, success_rate: 92, avg_time: 85, runs: 5 },
+  { tool: 'Claude Code', scenario: 'Refactor', category: 'refactor', cost_per_run: 0.31, success_rate: 88, avg_time: 102, runs: 5 },
+  { tool: 'Claude Code', scenario: 'Debug', category: 'debug', cost_per_run: 0.28, success_rate: 84, avg_time: 94, runs: 5 },
+  { tool: 'Claude Code', scenario: 'Analysis', category: 'analysis', cost_per_run: 0.42, success_rate: 96, avg_time: 78, runs: 5 },
+  { tool: 'Cursor', scenario: 'Greenfield', category: 'greenfield', cost_per_run: 0.14, success_rate: 80, avg_time: 35, runs: 5 },
+  { tool: 'Cursor', scenario: 'Refactor', category: 'refactor', cost_per_run: 0.18, success_rate: 76, avg_time: 42, runs: 5 },
+  { tool: 'Cursor', scenario: 'Debug', category: 'debug', cost_per_run: 0.16, success_rate: 72, avg_time: 38, runs: 5 },
+  { tool: 'Cursor', scenario: 'Analysis', category: 'analysis', cost_per_run: 0.21, success_rate: 84, avg_time: 31, runs: 5 },
+  { tool: 'Codex CLI', scenario: 'Greenfield', category: 'greenfield', cost_per_run: 0.19, success_rate: 84, avg_time: 95, runs: 5 },
+  { tool: 'Codex CLI', scenario: 'Refactor', category: 'refactor', cost_per_run: 0.25, success_rate: 80, avg_time: 110, runs: 5 },
+  { tool: 'Codex CLI', scenario: 'Debug', category: 'debug', cost_per_run: 0.22, success_rate: 76, avg_time: 88, runs: 5 },
+  { tool: 'Codex CLI', scenario: 'Analysis', category: 'analysis', cost_per_run: 0.29, success_rate: 88, avg_time: 72, runs: 5 },
+];
+
+DATA.forEach(d => { d.cost_per_success = d.cost_per_run / (d.success_rate / 100); });
+
+function getAggregates(filter) {
+  const filtered = filter === 'all' ? DATA : DATA.filter(d => d.category === filter);
+  const agg = {};
+  Object.keys(TOOLS).forEach(tool => {
+    const rows = filtered.filter(d => d.tool === tool);
+    if (rows.length === 0) return;
+    agg[tool] = {
+      cost_per_success: rows.reduce((s, r) => s + r.cost_per_success, 0) / rows.length,
+      success_rate: rows.reduce((s, r) => s + r.success_rate, 0) / rows.length,
+      avg_time: rows.reduce((s, r) => s + r.avg_time, 0) / rows.length,
+    };
+  });
+  return agg;
+}
+
+let chartCost, chartSuccess, chartSpeed;
+function renderCharts(filter) {
+  const agg = getAggregates(filter);
+  const labels = Object.keys(agg);
+  const colors = labels.map(l => TOOLS[l]);
+
+  const opts = (indexAxis) => ({
+    indexAxis,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: true } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 11 } } }
+    }
+  });
+
+  if (chartCost) chartCost.destroy();
+  if (chartSuccess) chartSuccess.destroy();
+  if (chartSpeed) chartSpeed.destroy();
+
+  chartCost = new Chart(document.getElementById('chart-cost'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: labels.map(l => +agg[l].cost_per_success.toFixed(3)), backgroundColor: colors, borderRadius: 4, barThickness: 28 }] },
+    options: { ...opts('x'), scales: { ...opts('x').scales, y: { ...opts('x').scales.y, ticks: { ...opts('x').scales.y.ticks, callback: v => '$' + v.toFixed(2) } } }, plugins: { ...opts('x').plugins, tooltip: { callbacks: { label: ctx => '$' + ctx.raw.toFixed(3) } } } }
+  });
+
+  chartSuccess = new Chart(document.getElementById('chart-success'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: labels.map(l => +agg[l].success_rate.toFixed(0)), backgroundColor: colors, borderRadius: 4, barThickness: 28 }] },
+    options: { ...opts('x'), scales: { ...opts('x').scales, y: { ...opts('x').scales.y, ticks: { ...opts('x').scales.y.ticks, callback: v => v + '%' }, max: 100 } } }
+  });
+
+  chartSpeed = new Chart(document.getElementById('chart-speed'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: labels.map(l => +agg[l].avg_time.toFixed(0)), backgroundColor: colors, borderRadius: 4, barThickness: 28 }] },
+    options: { ...opts('x'), scales: { ...opts('x').scales, y: { ...opts('x').scales.y, ticks: { ...opts('x').scales.y.ticks, callback: v => v + 's' } } } }
+  });
+}
+
+function renderTable(filter) {
+  const filtered = filter === 'all' ? DATA : DATA.filter(d => d.category === filter);
+  const tbody = document.querySelector('#results-table tbody');
+  tbody.innerHTML = filtered.map(d => `
+    <tr>
+      <td><span class="tool-badge"><span class="tool-dot" style="background:${TOOLS[d.tool]}"></span>${d.tool}</span></td>
+      <td>${d.scenario}</td>
+      <td>$${d.cost_per_run.toFixed(3)}</td>
+      <td>${d.success_rate}%</td>
+      <td class="metric-highlight">$${d.cost_per_success.toFixed(3)}</td>
+      <td>${d.avg_time}s</td>
+      <td>${d.runs}</td>
+    </tr>
+  `).join('');
+}
+
+let currentFilter = 'all';
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderCharts(currentFilter);
+    renderTable(currentFilter);
+  });
+});
+
+// Sort
+let sortDir = {};
+document.querySelectorAll('thead th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    sortDir[key] = !(sortDir[key] || false);
+    const filtered = currentFilter === 'all' ? [...DATA] : DATA.filter(d => d.category === currentFilter);
+    filtered.sort((a, b) => sortDir[key] ? (a[key] > b[key] ? 1 : -1) : (a[key] < b[key] ? 1 : -1));
+    const tbody = document.querySelector('#results-table tbody');
+    tbody.innerHTML = filtered.map(d => `
+      <tr>
+        <td><span class="tool-badge"><span class="tool-dot" style="background:${TOOLS[d.tool]}"></span>${d.tool}</span></td>
+        <td>${d.scenario}</td>
+        <td>$${d.cost_per_run.toFixed(3)}</td>
+        <td>${d.success_rate}%</td>
+        <td class="metric-highlight">$${d.cost_per_success.toFixed(3)}</td>
+        <td>${d.avg_time}s</td>
+        <td>${d.runs}</td>
+      </tr>
+    `).join('');
+  });
+});
+
+renderCharts('all');
+renderTable('all');
+</script>
+</body>
+</html>
