@@ -10,7 +10,6 @@ An independent benchmark comparing AI coding tools on **cost per successful task
 
 | Model | Claude Code | Kiro CLI | Ratio |
 |-------|------------|----------|:---:|
-| Sonnet 4 | $0.3373 | $0.0468 | **7.2×** |
 | Sonnet 4.6 | $0.2214 | $0.0396 | **5.6×** |
 | Opus 4.8 | $0.3426 | $0.0968 | **3.5×** |
 | Haiku 4.5 | $0.1061 | $0.0136 | **7.8×** |

@@ -120,8 +120,6 @@ footer a { color: #555; }
       </tr>
     </thead>
     <tbody>
-      <tr><td rowspan="2"><strong>Sonnet 4</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.3373</td><td>—</td><td>32</td><td>113.5s</td><td class="pass">71/71 ✓</td></tr>
-      <tr><td><span class="tool-badge"><span class="tool-dot" style="background:#FF9900"></span>Kiro CLI</span></td><td class="metric-highlight">$0.0468</td><td>2.34</td><td>—</td><td>110.9s</td><td class="pass">71/71 ✓</td></tr>
       <tr><td rowspan="2"><strong>Sonnet 4.6</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.2214</td><td>—</td><td>20</td><td>80.5s</td><td class="pass">71/71 ✓</td></tr>
       <tr><td><span class="tool-badge"><span class="tool-dot" style="background:#FF9900"></span>Kiro CLI</span></td><td class="metric-highlight">$0.0396</td><td>1.98</td><td>—</td><td>77s</td><td class="pass">71/71 ✓</td></tr>
       <tr><td rowspan="2"><strong>Opus 4.8</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.3426</td><td>—</td><td>11</td><td>71.0s</td><td class="pass">71/71 ✓</td></tr>
@@ -184,9 +182,9 @@ footer a { color: #555; }
 </footer>
 
 <script>
-const models = ['Sonnet 4', 'Sonnet 4.6', 'Opus 4.8', 'Haiku 4.5'];
-const ccCosts = [0.3373, 0.2214, 0.3426, 0.1061];
-const kiroCosts = [0.0468, 0.0396, 0.0968, 0.0136];
+const models = ['Sonnet 4.6', 'Opus 4.8', 'Haiku 4.5'];
+const ccCosts = [0.2214, 0.3426, 0.1061];
+const kiroCosts = [0.0396, 0.0968, 0.0136];
 const ratios = ccCosts.map((c, i) => +(c / kiroCosts[i]).toFixed(1));
 
 const chartOpts = {
