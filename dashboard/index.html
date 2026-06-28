@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CostToShip — AI Coding Tools Benchmark</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #ffffff; color: #1a1a1a; line-height: 1.6; }
+
+nav { display: flex; align-items: center; padding: 16px 48px; border-bottom: 1px solid #e5e5e5; position: sticky; top: 0; background: #fff; z-index: 100; }
+nav .logo { font-weight: 700; font-size: 15px; background: #1a1a1a; color: #fff; padding: 6px 14px; border-radius: 20px; margin-right: 32px; }
+nav .nav-links { display: flex; gap: 24px; }
+nav .nav-links a { text-decoration: none; color: #555; font-size: 14px; font-weight: 500; }
+nav .nav-links a:hover { color: #1a1a1a; }
+nav .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+nav .nav-right a { text-decoration: none; color: #555; font-size: 14px; }
+
+.hero { padding: 64px 48px 48px; max-width: 1280px; margin: 0 auto; }
+.hero h1 { font-size: 48px; font-weight: 700; line-height: 1.1; letter-spacing: -1.5px; }
+.hero .subtitle { font-size: 18px; color: #666; margin-top: 16px; max-width: 640px; }
+.hero .headline-stat { display: inline-flex; align-items: baseline; gap: 12px; margin-top: 24px; padding: 16px 24px; background: #f8f8f8; border-radius: 12px; border: 1px solid #e5e5e5; }
+.hero .headline-stat .number { font-size: 42px; font-weight: 700; color: #c0392b; }
+.hero .headline-stat .label { font-size: 15px; color: #555; }
+
+.section-header { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.section-sub { font-size: 14px; color: #666; margin-bottom: 24px; }
+
+.highlights-section { padding: 48px; max-width: 1280px; margin: 0 auto; border-top: 1px solid #e5e5e5; }
+.highlights-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.highlight-card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 24px; background: #fff; }
+.highlight-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.chart-container { position: relative; height: 280px; }
+
+.table-section { padding: 48px; max-width: 1280px; margin: 0 auto; border-top: 1px solid #e5e5e5; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead th { text-align: left; padding: 12px 16px; border-bottom: 2px solid #e5e5e5; font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+tbody td { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; }
+tbody tr:hover { background: #fafafa; }
+.tool-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+.tool-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.metric-highlight { font-weight: 700; color: #1a1a1a; }
+.pass { color: #27ae60; font-weight: 600; }
+
+.methodology-section { padding: 48px; max-width: 1280px; margin: 0 auto; border-top: 1px solid #e5e5e5; }
+.methodology-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; }
+.method-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.method-item p { font-size: 13px; color: #666; }
+
+.notes-section { padding: 32px 48px 48px; max-width: 1280px; margin: 0 auto; }
+.notes-section ul { list-style: disc; padding-left: 20px; font-size: 13px; color: #666; line-height: 2; }
+.notes-section code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+footer { padding: 32px 48px; border-top: 1px solid #e5e5e5; text-align: center; font-size: 13px; color: #888; }
+footer a { color: #555; }
+
+@media (max-width: 900px) {
+  .hero { padding: 32px 24px; }
+  .hero h1 { font-size: 32px; }
+  .highlights-grid { grid-template-columns: 1fr; }
+  .methodology-grid { grid-template-columns: 1fr; }
+  nav { padding: 12px 24px; }
+  .highlights-section, .table-section, .methodology-section, .notes-section { padding-left: 24px; padding-right: 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">⚡ CostToShip</div>
+  <div class="nav-links">
+    <a href="#charts">Charts</a>
+    <a href="#results">Results</a>
+    <a href="#methodology">Methodology</a>
+  </div>
+  <div class="nav-right">
+    <a href="https://github.com/gilinachum/kiro-cost-benchmark" target="_blank">GitHub ↗</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>The true cost of<br>AI-generated code</h1>
+  <p class="subtitle">Comparing AI coding tools on <strong>cost per successful task</strong> — not per token, not per run. Same model, same prompt, same test suite. Independent benchmark.</p>
+  <div class="headline-stat">
+    <span class="number">3.5–7.8×</span>
+    <span class="label">Kiro CLI cheaper than Claude Code across all models tested</span>
+  </div>
+</section>
+
+<section class="highlights-section" id="charts">
+  <h2 class="section-header">Model Comparison</h2>
+  <p class="section-sub">gf-url-shortener-hard — 7 modules, 71 pytest tests, all pass on both tools</p>
+  <div class="highlights-grid">
+    <div class="highlight-card">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Cost per Task (USD)</h3>
+      <div class="chart-container"><canvas id="chart-cost"></canvas></div>
+    </div>
+    <div class="highlight-card">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Cost Ratio (Claude Code ÷ Kiro)</h3>
+      <div class="chart-container"><canvas id="chart-ratio"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<section class="table-section" id="results">
+  <h2 class="section-header">Detailed Results</h2>
+  <p class="section-sub">Scenario: gf-url-shortener-hard (71 tests) · Date: 2026-06-26 · N=1 per cell</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Tool</th>
+        <th>Cost</th>
+        <th>Credits</th>
+        <th>Turns</th>
+        <th>Time</th>
+        <th>Tests</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td rowspan="2"><strong>Sonnet 4</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.3373</td><td>—</td><td>32</td><td>113.5s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td><span class="tool-badge"><span class="tool-dot" style="background:#FF9900"></span>Kiro CLI</span></td><td class="metric-highlight">$0.0468</td><td>2.34</td><td>—</td><td>110.9s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td rowspan="2"><strong>Sonnet 4.6</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.2214</td><td>—</td><td>20</td><td>80.5s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td><span class="tool-badge"><span class="tool-dot" style="background:#FF9900"></span>Kiro CLI</span></td><td class="metric-highlight">$0.0396</td><td>1.98</td><td>—</td><td>77s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td rowspan="2"><strong>Opus 4.8</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.3426</td><td>—</td><td>11</td><td>71.0s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td><span class="tool-badge"><span class="tool-dot" style="background:#FF9900"></span>Kiro CLI</span></td><td class="metric-highlight">$0.0968</td><td>4.84</td><td>—</td><td>128s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td rowspan="2"><strong>Haiku 4.5</strong></td><td><span class="tool-badge"><span class="tool-dot" style="background:#D4A574"></span>Claude Code</span></td><td class="metric-highlight">$0.1061</td><td>—</td><td>26</td><td>74.9s</td><td class="pass">71/71 ✓</td></tr>
+      <tr><td><span class="tool-badge"><span class="tool-dot" style="background:#FF9900"></span>Kiro CLI</span></td><td class="metric-highlight">$0.0136</td><td>0.68</td><td>—</td><td>56s</td><td class="pass">71/71 ✓</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="methodology-section" id="methodology">
+  <h2 class="section-header">Methodology</h2>
+  <div class="methodology-grid">
+    <div class="method-item">
+      <h4>Same Model</h4>
+      <p>Both tools use the same underlying Claude model. Differences measure harness efficiency, not model intelligence.</p>
+    </div>
+    <div class="method-item">
+      <h4>Fresh Session</h4>
+      <p>Verbatim prompt, clean directory, no context carryover. No MCP tools, no custom instructions.</p>
+    </div>
+    <div class="method-item">
+      <h4>Automated Scoring</h4>
+      <p>Binary pass/fail via pytest. 71 unit tests covering 7 modules. No subjective grading.</p>
+    </div>
+    <div class="method-item">
+      <h4>Cost Measurement</h4>
+      <p>Claude Code: Bedrock API cost from output JSON. Kiro: credit count × $0.02 (Pro subscription rate).</p>
+    </div>
+    <div class="method-item">
+      <h4>Reproducible</h4>
+      <p>All scenarios, tests, and runner scripts are open source. Pin versions, run yourself.</p>
+    </div>
+    <div class="method-item">
+      <h4>Limitations</h4>
+      <p>N=1 per model (need N=5). Scenario is easy (100% pass). Harder scenarios planned.</p>
+    </div>
+  </div>
+</section>
+
+<section class="notes-section">
+  <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">Kiro Credit Multipliers</h3>
+  <ul>
+    <li>Haiku 4.5: <strong>0.40×</strong> credits → cheapest option</li>
+    <li>Sonnet 4 / 4.5 / 4.6: <strong>1.30×</strong> credits</li>
+    <li>Opus 4.5–4.8: <strong>2.20×</strong> credits → narrows the gap</li>
+    <li>DeepSeek 3.2: <strong>0.25×</strong> credits (not yet tested)</li>
+  </ul>
+  <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px; margin-top: 24px;">Configuration</h3>
+  <ul>
+    <li>Claude Code: <code>CLAUDE_CODE_USE_BEDROCK=1 CLAUDE_CODE_DISABLE_THINKING=1 CLAUDE_CODE_MAX_TURNS=50</code></li>
+    <li>Claude Code flags: <code>--bare --no-session-persistence --output-format json --permission-mode bypassPermissions</code></li>
+    <li>Kiro CLI: <code>--no-interactive -a --effort high --model &lt;model&gt;</code></li>
+    <li>Kiro CLI Pro: $20/mo, 1000 credits included, overage $0.04/credit</li>
+  </ul>
+</section>
+
+<footer>
+  Independent benchmark by Gili · Not affiliated with any vendor · <a href="https://github.com/gilinachum/kiro-cost-benchmark">Source & data on GitHub</a>
+</footer>
+
+<script>
+const models = ['Sonnet 4', 'Sonnet 4.6', 'Opus 4.8', 'Haiku 4.5'];
+const ccCosts = [0.3373, 0.2214, 0.3426, 0.1061];
+const kiroCosts = [0.0468, 0.0396, 0.0968, 0.0136];
+const ratios = ccCosts.map((c, i) => +(c / kiroCosts[i]).toFixed(1));
+
+const chartOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { position: 'top', labels: { font: { size: 12 } } } },
+  scales: {
+    x: { grid: { display: false } },
+    y: { grid: { color: '#f0f0f0' }, beginAtZero: true }
+  }
+};
+
+new Chart(document.getElementById('chart-cost'), {
+  type: 'bar',
+  data: {
+    labels: models,
+    datasets: [
+      { label: 'Claude Code', data: ccCosts, backgroundColor: '#D4A574', borderRadius: 4, barPercentage: 0.7 },
+      { label: 'Kiro CLI', data: kiroCosts, backgroundColor: '#FF9900', borderRadius: 4, barPercentage: 0.7 }
+    ]
+  },
+  options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { callback: v => '$' + v.toFixed(2) } } } }
+});
+
+new Chart(document.getElementById('chart-ratio'), {
+  type: 'bar',
+  data: {
+    labels: models,
+    datasets: [{
+      label: 'CC/Kiro ratio',
+      data: ratios,
+      backgroundColor: ratios.map(r => r > 6 ? '#c0392b' : r > 4 ? '#e67e22' : '#f1c40f'),
+      borderRadius: 4,
+      barPercentage: 0.5
+    }]
+  },
+  options: {
+    ...chartOpts,
+    plugins: { ...chartOpts.plugins, legend: { display: false } },
+    scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { callback: v => v + '×' } } }
+  }
+});
+</script>
+</body>
+</html>
